@@ -1,10 +1,10 @@
 import { Injectable } from '@nestjs/common';
-import crypto from 'crypto';
+import * as crypto from 'crypto';
 
 const config = {
   appID: 'wxd27649727105b6d2',
-  appsecret: 'a3f2eb9f5819b0bf4b2a92a81f99baf4',
-  token: 'wechat',
+  appsecret: 'cfce29be9accda7e632d4b108375eeea',
+  token: 'zhi ',
 };
 @Injectable()
 export class AppService {
@@ -13,6 +13,7 @@ export class AppService {
     const tempStr = [config.token, timestamp, nonce].sort().join('');
     const hashCode = crypto.createHash('sha1');
     const resultCode = hashCode.update(tempStr, 'utf8').digest('hex');
+    console.log('====xxx====', resultCode, resultCode);
     if (resultCode === signature) {
       return echostr;
     } else {
