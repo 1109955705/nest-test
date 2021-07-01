@@ -2,7 +2,7 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 const config = {
-  appID: 'wxd27649727105b6d2',
+  appID: 'wx32df79c57874288b',
   appsecret: 'cfce29be9accda7e632d4b108375eeea',
   token: 'zhi ',
 };
