@@ -2,9 +2,9 @@ import { Injectable } from '@nestjs/common';
 import * as crypto from 'crypto';
 
 const config = {
-  appID: 'wx32df79c57874288b',
-  appsecret: 'cfce29be9accda7e632d4b108375eeea',
-  token: 'zhi ',
+  appID: 'wx3cd1ab82a763e2e8',
+  appsecret: '7fd641b9b5cbc2c3f3c1a71ac9b211cc',
+  token: 'zhi',
 };
 @Injectable()
 export class AppService {
@@ -13,7 +13,7 @@ export class AppService {
     const tempStr = [config.token, timestamp, nonce].sort().join('');
     const hashCode = crypto.createHash('sha1');
     const resultCode = hashCode.update(tempStr, 'utf8').digest('hex');
-    console.log('====xxx====', resultCode, resultCode);
+    console.log('====xxx====', resultCode, signature);
     if (resultCode === signature) {
       return echostr;
     } else {
