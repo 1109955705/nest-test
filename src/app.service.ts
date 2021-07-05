@@ -13,7 +13,6 @@ export class AppService {
     const tempStr = [config.token, timestamp, nonce].sort().join('');
     const hashCode = crypto.createHash('sha1');
     const resultCode = hashCode.update(tempStr, 'utf8').digest('hex');
-    console.log('====xxx====', resultCode, signature);
     if (resultCode === signature) {
       return echostr;
     } else {

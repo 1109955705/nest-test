@@ -7,7 +7,6 @@ export class AppController {
 
   @Get()
   getHello(@Query() query: any): string {
-    console.log('xxxxxxxxxx', query);
     return this.appService.getHello(query);
   }
 }

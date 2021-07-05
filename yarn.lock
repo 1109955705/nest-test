@@ -615,6 +615,11 @@
     tslib "2.2.0"
     uuid "8.3.2"
 
+"@nestjs/mapped-types@*":
+  version "0.4.1"
+  resolved "https://registry.npm.taobao.org/@nestjs/mapped-types/download/@nestjs/mapped-types-0.4.1.tgz"
+  integrity sha1-5/4Djwvdp7j4WPp5yoUWuPkGmxo=
+
 "@nestjs/platform-express@^7.6.15":
   version "7.6.17"
   resolved "https://registry.nlark.com/@nestjs/platform-express/download/@nestjs/platform-express-7.6.17.tgz"
