@@ -1,11 +1,14 @@
 import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
-import { LoggerMiddleware } from '@/common/middlewares/logger.middlewar';
+import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from '@/modules//user/user.module';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 
 @Module({
-  imports: [UsersModule],
+  imports: [
+    MongooseModule.forRoot('mongodb://localhost:27017/nest-test'),
+    UsersModule,
+  ],
   controllers: [AppController],
   providers: [AppService],
 })

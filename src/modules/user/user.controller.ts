@@ -34,8 +34,6 @@ export class UsersController {
 
   @Get()
   findAll() {
-    // throw new ForbiddenException();
-    // throw new Error('xxxxxxxx');
     return this.usersService.findAll();
   }
 
