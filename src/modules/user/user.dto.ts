@@ -1,10 +1,30 @@
-import { IsString, IsInt, IsNotEmpty } from 'class-validator';
+import {
+  IsString,
+  IsOptional,
+  IsInt,
+  Min,
+  Max,
+  minLength,
+  IsNotEmpty,
+  Length,
+} from 'class-validator';
 
 export class CreateUserDto {
   @IsNotEmpty({ message: '用户名不能为空' })
-  @IsString({ message: '真实姓名必须是 String 类型' })
-  readonly name: string;
+  readonly username: string;
 
-  @IsInt({ message: '年龄必须是 number 类型' })
-  readonly age: number;
+  @IsNotEmpty({ message: '密码不能为空' })
+  @Length(6, 20, { message: '密码长度为6-20位' })
+  readonly password: string;
+}
+
+export class FindUserDto {
+  @IsOptional()
+  @Length(24, 24, { message: 'id长度必须为24位' })
+  readonly id: string;
+}
+
+export class DeleteUserByIdDto {
+  @Length(24, 24, { message: 'id长度必须为24位' })
+  readonly id: string;
 }

@@ -13,33 +13,30 @@ import {
   ValidationPipe,
   UsePipes,
   Headers,
+  HttpCode,
 } from '@nestjs/common';
-import {
-  HttpExceptionFilter,
-  ForbiddenException,
-} from '@/common/error-interceptor';
+
 import { Roles, RolesGuard } from '@/common/guard';
 import { UsersService } from './user.service';
-import { CreateUserDto } from './user.dto';
+import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
 
 @Controller('user')
 export class UsersController {
   constructor(private readonly usersService: UsersService) {}
 
   @Post()
-  @UsePipes(ValidationPipe)
   create(@Body() user: CreateUserDto) {
     return this.usersService.create(user);
   }
 
   @Get()
-  findAll() {
-    return this.usersService.findAll();
-  }
-
-  @Get(':id')
-  findOne(@Param('id') id: string) {
-    return this.usersService.findOne(+id);
+  findOne(@Body() param: FindUserDto) {
+    const { id } = param;
+    if (id) {
+      return this.usersService.findById(id);
+    } else {
+      return this.usersService.findAll();
+    }
   }
 
   // @Patch(':id')
@@ -47,9 +44,10 @@ export class UsersController {
   //   return this.usersService.update(+id, updateUserDto);
   // }
 
-  @Delete(':id')
+  @Delete()
   @Roles('admin')
-  remove(@Param('id') id: string) {
-    return this.usersService.remove(+id);
+  remove(@Body() param: DeleteUserByIdDto) {
+    const { id } = param;
+    return this.usersService.remove(id);
   }
 }

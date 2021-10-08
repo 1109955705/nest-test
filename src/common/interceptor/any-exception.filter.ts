@@ -18,11 +18,23 @@ export default class AllExceptionsFilter implements ExceptionFilter {
         ? exception.getStatus()
         : HttpStatus.INTERNAL_SERVER_ERROR;
     console.log('AllExceptionsFilter', exception);
-
+    const exceptionResponse =
+      exception instanceof HttpException
+        ? exception.getResponse()
+        : {
+            code: 500,
+            message: '未知错误',
+          };
+    let message =
+      exceptionResponse instanceof Object
+        ? (exceptionResponse as any).message
+        : exceptionResponse;
+    message = Array.isArray(message) ? message[message.length - 1] : message;
+    console.log('AllExceptionsFilter', status, message);
     response.status(status).json({
-      statusCode: status,
-      timestamp: new Date().toISOString(),
-      path: request.url,
+      code: status,
+      data: {},
+      message,
     });
   }
 }

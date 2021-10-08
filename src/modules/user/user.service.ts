@@ -1,32 +1,36 @@
 import { Model } from 'mongoose';
-import { Injectable } from '@nestjs/common';
+import { Injectable, HttpException, HttpStatus } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.schema';
-import { CreateUserDto } from './dto/create-user.dto';
-import { UpdateUserDto } from './dto/update-user.dto';
-
+import { UsersDao } from './user.dao';
+import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
 @Injectable()
 export class UsersService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  create(createUserDto: CreateUserDto) {
-    return 'This action adds a new user';
+  constructor(private readonly usersDao: UsersDao) {}
+  create(user: CreateUserDto) {
+    return this.usersDao.create(user);
   }
 
-  async findAll() {
+  findAll() {
     console.log(`This action returns all users`);
-    const result = await this.userModel.find({});
+    const result = this.usersDao.findAll();
     return result;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  async findById(id: string) {
+    const result = await this.usersDao.findById(id);
+    if (result) {
+      return result;
+    } else {
+      throw new HttpException('该用户不存在', HttpStatus.BAD_REQUEST);
+    }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
+  update(id: string) {
     return `This action updates a #${id} user`;
   }
 
-  remove(id: number) {
+  remove(id: string) {
     return `This action removes a #${id} user`;
   }
 }
