@@ -17,10 +17,12 @@ export class UsersDao {
     return result;
   }
 
-  findById(id: string) {
-    /*     const result = await this.userModel.findById(id);
-    return result; */
-    return this.userModel.findById(id);
+  async findById(id: string) {
+    const result = await this.userModel.findById(id);
+    console.log('xxxxxxxxxx', result);
+
+    return result;
+    // return this.userModel.findById(id);
   }
 
   async update(id: number) {

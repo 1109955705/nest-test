@@ -18,7 +18,9 @@ export class UsersService {
   }
 
   async findById(id: string) {
-    const result = await this.usersDao.findById(id);
+    const result = this.usersDao.findById(id);
+    console.log('111111111111', result);
+
     if (result) {
       return result;
     } else {
