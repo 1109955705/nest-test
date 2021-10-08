@@ -1,4 +1,5 @@
 import { NestFactory } from '@nestjs/core';
+import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import {
   LoggerMiddleware,
@@ -8,8 +9,8 @@ import {
 import {
   AnyExceptionFilter,
   HttpExceptionFilter,
-} from '@/common/error-interceptor';
-import { RolesGuard } from '@/common/guard';
+  ResponseInterceptor,
+} from '@/common/interceptor';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -17,9 +18,14 @@ async function bootstrap() {
   app.use(express.json()); // 为了中间件也能解析 application/json
   app.use(express.urlencoded({ extended: true })); // 为了中间件也能解析 application/x-www-form-urlencoded
   app.use(logger); // 日志记录中件间
-  app.useGlobalFilters(new AnyExceptionFilter(), new HttpExceptionFilter()); // 捕获未知错误的拦截器
-
-  // app.useGlobalInterceptors(new LoggingInterceptor());
+  app.useGlobalFilters(new AnyExceptionFilter()); // 拦截未知错误
+  app.useGlobalInterceptors(new ResponseInterceptor());
+  app.useGlobalPipes(
+    new ValidationPipe({
+      stopAtFirstError: true,
+    }),
+  );
+  // app.useGlobalFilters(new AnyExceptionFilter(), new HttpExceptionFilter()); // 拦截请求回复
   await app.listen(3000);
 }
 
