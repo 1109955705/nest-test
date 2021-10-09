@@ -1,21 +1,4 @@
-import {
-  Controller,
-  Get,
-  Post,
-  Body,
-  Patch,
-  Query,
-  Param,
-  Delete,
-  HttpException,
-  HttpStatus,
-  UseFilters,
-  ValidationPipe,
-  UsePipes,
-  Headers,
-  HttpCode,
-} from '@nestjs/common';
-
+import { Controller, Get, Post, Body, Delete, UseGuards } from '@nestjs/common';
 import { Roles, RolesGuard } from '@/common/guard';
 import { UsersService } from './user.service';
 import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
@@ -45,6 +28,7 @@ export class UsersController {
   // }
 
   @Delete()
+  @UseGuards(RolesGuard)
   @Roles('admin')
   remove(@Body() param: DeleteUserByIdDto) {
     const { id } = param;

@@ -34,9 +34,11 @@ export class LoggingInterceptor implements NestInterceptor {
 // 函数式中间件
 export function logger(req: Request, res: Response, next: () => any) {
   const code = res.statusCode; // 响应状态码
+  console.log('1111111111111111');
   next();
   // 组装日志信息
   const logFormat = `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+    Type: Request
     Request original url: ${req.originalUrl}
     Method: ${req.method}
     IP: ${req.ip}

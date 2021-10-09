@@ -7,32 +7,23 @@ import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
 @Injectable()
 export class UsersDao {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
-  async create(user: CreateUserDto) {
-    const result = this.userModel.create(user);
-    return result;
+  create(user: CreateUserDto) {
+    return this.userModel.create(user);
   }
 
-  async findAll() {
-    const result = await this.userModel.find({});
-    return result;
+  findAll() {
+    return this.userModel.find({});
   }
 
   async findById(id: string) {
-    const result = await this.userModel.findById(id);
-    console.log('xxxxxxxxxx', result);
-
-    return result;
-    // return this.userModel.findById(id);
+    return this.userModel.findById(id);
   }
 
-  async update(id: number) {
+  async update(id: string) {
     return `This action updates a #${id} user`;
   }
 
   async remove(id: string) {
-    const result = await this.userModel.findById(id);
-    console.log('xxxxxxxx', result);
-
-    return `This action removes a #${id} user`;
+    return this.userModel.deleteOne({ _id: id });
   }
 }
