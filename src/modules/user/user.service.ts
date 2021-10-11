@@ -14,7 +14,10 @@ export class UsersService {
   }
 
   async findAll() {
-    await this.usersDao.findAll();
+    console.log('findAll');
+
+    const result = await this.usersDao.findAll();
+    return result;
   }
 
   async findById(id: string) {

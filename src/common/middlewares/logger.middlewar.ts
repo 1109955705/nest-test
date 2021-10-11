@@ -34,8 +34,7 @@ export class LoggingInterceptor implements NestInterceptor {
 // 函数式中间件
 export function logger(req: Request, res: Response, next: () => any) {
   const code = res.statusCode; // 响应状态码
-  console.log('1111111111111111');
-  next();
+  console.log('middlewar:start');
   // 组装日志信息
   const logFormat = `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     Type: Request
@@ -48,4 +47,16 @@ export function logger(req: Request, res: Response, next: () => any) {
     Body: ${JSON.stringify(req.body)}
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>`;
   console.log(logFormat);
+  // hack方法，不推荐使用, 即使被错误过滤器捕获到也会执行这个方法
+  // const _end = res.end;
+  // res.end = function end(...rest) {
+  //   const endTime = Date.now();
+  //   console.log('xxxxxxxxxxxxxxxxxxxxx');
+  //   _end.apply(res, rest);
+  // };
+  // setTimeout(() => {
+  //   next();
+  // });
+  next();
+  console.log('middlewar:end');
 }

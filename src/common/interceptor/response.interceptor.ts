@@ -12,7 +12,7 @@ import { map } from 'rxjs/operators';
 export default class ResponseInterceptor implements NestInterceptor {
   public intercept(context: any, next: CallHandler): Observable<any> {
     const req = context.getArgByIndex(1).req;
-    console.log('22222222222222');
+    console.log('NestInterceptor:start');
 
     return next.handle().pipe(
       map((data = {}) => {
@@ -20,15 +20,15 @@ export default class ResponseInterceptor implements NestInterceptor {
         const code = context.getArgByIndex(1).statusCode || HttpStatus.OK;
         const message = req.message || '未知错误';
         const logFormat = `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
-         Type: Response
-         Response original url: ${req.originalUrl}
-         Method: ${req.method}
-         IP: ${req.ip}
-         code: ${code}
-         data: ${JSON.stringify(data)}
-         message: '请求成功'
+    Type: Response
+    Response original url: ${req.originalUrl}
+    Method: ${req.method}
+    IP: ${req.ip}
+    code: ${code}
+    data: ${JSON.stringify(data)}
+    message: '请求成功'
 >>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>`;
-        console.log('333333333333');
+        console.log('NestInterceptor:end');
         console.log(logFormat);
         return {
           code,
@@ -37,5 +37,7 @@ export default class ResponseInterceptor implements NestInterceptor {
         };
       }),
     );
+    // next.handle();
+    // console.log('NestInterceptor:after');
   }
 }
