@@ -15,15 +15,19 @@ export class UsersDao {
     return this.userModel.find({});
   }
 
-  async findById(id: string) {
+  findById(id: string) {
     return this.userModel.findById(id);
   }
 
-  async update(id: string) {
+  findByName(username: string) {
+    return this.userModel.find({ username });
+  }
+
+  update(id: string) {
     return `This action updates a #${id} user`;
   }
 
-  async remove(id: string) {
+  remove(id: string) {
     return this.userModel.deleteOne({ _id: id });
   }
 }

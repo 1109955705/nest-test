@@ -17,7 +17,8 @@ export default class ResponseInterceptor implements NestInterceptor {
     return next.handle().pipe(
       map((data = {}) => {
         // 获取自定义请求状态码
-        const code = context.getArgByIndex(1).statusCode || HttpStatus.OK;
+        const { statusCode } = context.getArgByIndex(1);
+        const code = statusCode < 300 ? HttpStatus.OK : statusCode;
         const message = req.message || '未知错误';
         const logFormat = `>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
     Type: Response

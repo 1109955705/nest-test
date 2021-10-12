@@ -8,10 +8,12 @@ import { User, UserSchema } from './user.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
+      // 指定collection是因为mongoose会对数据库某些名字自动+s
       { name: User.name, schema: UserSchema, collection: 'user' },
     ]),
   ],
   controllers: [UsersController],
   providers: [UsersService, UsersDao],
+  exports: [UsersService],
 })
 export class UsersModule {}

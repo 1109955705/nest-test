@@ -3,8 +3,10 @@ import { ValidationPipe } from '@nestjs/common';
 import * as express from 'express';
 import { logger } from '@/common/middlewares/logger.middlewar';
 import { ResponseInterceptor, TimeoutInterceptor } from '@/common/interceptor';
-import { RolesGuard } from '@/common/guard';
+import { RoleAuthGuard } from '@/common/guard';
 import { AnyExceptionFilter } from '@/common/filters';
+import { AuthGuard } from '@nestjs/passport';
+import { Reflector } from '@nestjs/core';
 import { AppModule } from './app.module';
 
 async function bootstrap() {
@@ -15,6 +17,11 @@ async function bootstrap() {
   app.useGlobalFilters(new AnyExceptionFilter()); // 拦截未知错误
   app.useGlobalInterceptors(new ResponseInterceptor());
   app.useGlobalInterceptors(new TimeoutInterceptor());
+  // app.useGlobalGuards(new RolesGuard(new Reflector()));
+  // eslint-disable-next-line prettier/prettier
+  app.useGlobalGuards(new RoleAuthGuard(new Reflector()));
+  // app.useGlobalGuards(new (AuthGuard('jwt')));
+
   app.useGlobalPipes(
     new ValidationPipe({
       stopAtFirstError: true,

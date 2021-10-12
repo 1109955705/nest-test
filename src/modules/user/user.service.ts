@@ -4,7 +4,6 @@ import { InjectModel } from '@nestjs/mongoose';
 import { User, UserDocument } from './user.schema';
 import { UsersDao } from './user.dao';
 import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
-import { timeoutPromise } from '@/common/utils';
 @Injectable()
 export class UsersService {
   constructor(private readonly usersDao: UsersDao) {}
@@ -24,6 +23,16 @@ export class UsersService {
     const result = await this.usersDao.findById(id);
     if (result) {
       return result;
+    } else {
+      throw new HttpException('该用户不存在', HttpStatus.BAD_REQUEST);
+    }
+  }
+
+  async findByName(username: string) {
+    const result = await this.usersDao.findByName(username);
+    if (result && result.length === 1) {
+      // mongoose返回的对象包含很多属性，使用展开运算法时会多出来其它的属性，使用toJSON可以剔除无用的属性
+      return result[0].toJSON();
     } else {
       throw new HttpException('该用户不存在', HttpStatus.BAD_REQUEST);
     }

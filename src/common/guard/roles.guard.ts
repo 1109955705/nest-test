@@ -5,6 +5,8 @@ import {
   SetMetadata,
 } from '@nestjs/common';
 import { Reflector } from '@nestjs/core';
+import { Observable } from 'rxjs';
+import { AuthGuard, IAuthGuard } from '@nestjs/passport';
 
 export const roleConstans = {
   USER: 0,
@@ -12,20 +14,28 @@ export const roleConstans = {
 };
 
 export const Roles = (...roles: string[]) => SetMetadata('roles', roles);
+export const NoAuth = () => SetMetadata('no-auth', true);
 
 const matchRoles = (requireRole, userRole) => {
   return userRole > requireRole;
 };
+
 @Injectable()
-export class RolesGuard implements CanActivate {
-  canActivate(context: ExecutionContext): boolean {
-    const request = context.switchToHttp().getRequest();
+export class RoleAuthGuard implements CanActivate {
+  public constructor(private readonly reflector: Reflector) {}
+  canActivate(
+    context: ExecutionContext,
+  ): boolean | Promise<boolean> | Observable<boolean> {
+    const noAuth = this.reflector.get<boolean>('no-auth', context.getHandler());
+    const guard = RoleAuthGuard.getAuthGuard(noAuth);
+    return guard.canActivate(context);
+  }
 
-    console.log('RolesGuard', request.originalUrl, request.body);
-
-    const user = {
-      roles: 0,
-    };
-    return matchRoles(Roles, user.roles);
+  private static getAuthGuard(noAuth: boolean): IAuthGuard {
+    if (noAuth) {
+      return new (AuthGuard('local'))();
+    } else {
+      return new (AuthGuard('jwt'))();
+    }
   }
 }

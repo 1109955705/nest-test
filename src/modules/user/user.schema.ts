@@ -12,15 +12,7 @@ export class User {
   username: string;
 
   @Prop()
-  password: number;
+  password: string;
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
-
-// import * as mongoose from 'mongoose';
-
-// export const UserSchema = new mongoose.Schema({
-//   name: String,
-//   age: Number,
-//   breed: String,
-// });
