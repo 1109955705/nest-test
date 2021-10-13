@@ -18,6 +18,7 @@ export class AuthController {
   constructor(private readonly AuthService: AuthService) {}
 
   @NoAuth()
+  @UseGuards(AuthGuard('local'))
   @Post('login')
   login(@Body() user: LoginUserDto, @Request() req) {
     return req.user;

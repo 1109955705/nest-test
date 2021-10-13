@@ -1,5 +1,5 @@
 import { Controller, Get, Post, Body, Delete, UseGuards } from '@nestjs/common';
-import { Roles, RoleAuthGuard } from '@/common/guard';
+import { Roles, RoleAuthGuard, NoAuth } from '@/common/guard';
 import { AuthGuard } from '@nestjs/passport';
 import { UsersService } from './user.service';
 import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
@@ -27,6 +27,7 @@ export class UsersController {
   // update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
   //   return this.usersService.update(+id, updateUserDto);
   // }
+
   @Roles('admin')
   @Delete()
   remove(@Body() param: DeleteUserByIdDto) {

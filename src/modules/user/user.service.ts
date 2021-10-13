@@ -45,7 +45,6 @@ export class UsersService {
 
   async remove(id: string) {
     const { deletedCount } = await this.usersDao.remove(id);
-    console.log('xxxxx', deletedCount);
 
     if (deletedCount) {
       return;

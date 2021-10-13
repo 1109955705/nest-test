@@ -27,6 +27,7 @@ export class RoleAuthGuard implements CanActivate {
     context: ExecutionContext,
   ): boolean | Promise<boolean> | Observable<boolean> {
     const noAuth = this.reflector.get<boolean>('no-auth', context.getHandler());
+    if (noAuth) return true;
     const guard = RoleAuthGuard.getAuthGuard(noAuth);
     return guard.canActivate(context);
   }
