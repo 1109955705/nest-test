@@ -29,7 +29,7 @@ export class InitDbService implements OnModuleInit {
 
   private async initAccess(): Promise<void> {
     const accessList = await this.accessService.findAll();
-    console.log('accessList:result', accessList);
+
     if (!accessList.length) {
       console.log('用户表为空，创建管理员账号');
       // const createResult = await this.usersService.create(initAdminUser);

@@ -4,7 +4,10 @@ import { UsersService } from './user.service';
 import { UsersController } from './user.controller';
 import { UsersDao } from './user.dao';
 import { User, UserSchema } from './user.schema';
-
+import {
+  UserRole,
+  UserRoleSchema,
+} from '@/common/Schema/user-role/index.schema';
 @Module({
   imports: [
     MongooseModule.forFeature([
