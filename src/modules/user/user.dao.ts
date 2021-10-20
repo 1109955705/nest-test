@@ -8,6 +8,7 @@ import {
   UserRoleDocument,
 } from '@/common/Schema/user-role/index.schema';
 
+const table = 'menus';
 @Injectable()
 export class UsersDao {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
@@ -35,6 +36,11 @@ export class UsersDao {
       },
       { $unwind: '$userRole' },
       {
+        $project: {
+          password: 0,
+        },
+      },
+      {
         $lookup: {
           from: 'role',
           let: { roleId: { $toObjectId: '$userRole.roleId' } },
@@ -59,19 +65,32 @@ export class UsersDao {
                 $expr: { $eq: ['$roleId', '$$roleId'] },
               },
             },
+            {
+              $lookup: {
+                from: table,
+                let: { addressId: '$_id' },
+                pipeline: [
+                  {
+                    $match: { $expr: { $eq: ['user', 'user'] } },
+                  },
+                ],
+                as: 'address',
+              },
+            },
           ],
           as: 'roleResource',
         },
       },
-      {
-        $unwind: '$roleResource',
-      },
     ]);
     const result1 = await this.userModel.find({});
     console.log('result===', result);
-    console.log('result====userRole===', result[0]?.userRole);
-    console.log('result=====role==', result[0]?.role);
-    console.log('result=====roleResource==', result[0]?.roleResource);
+    // console.log('result====userRole===', result[0]?.userRole);
+    // console.log('result=====role==', result[0]?.role);
+    console.log(
+      'result=====roleResource==',
+      result[0]?.roleResource[0].address,
+    );
+    console.log('result=====roleResource==', result[1]?.roleResource);
     // console.log('result=====role==', result[1]?.role);
     // console.log('result1===', result1);
 
