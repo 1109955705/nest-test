@@ -21,6 +21,11 @@ export class UsersDao {
     // const result = await this.userModel.find({});
     const result = await this.userModel.aggregate([
       {
+        $match: {
+          $expr: { $eq: ['$_id', { $toObjectId: '616685b13f4cf23b21e0003b' }] },
+        },
+      },
+      {
         $lookup: {
           from: 'user_role',
           let: { userId: { $toString: '$_id' } },
@@ -65,36 +70,73 @@ export class UsersDao {
                 $expr: { $eq: ['$roleId', '$$roleId'] },
               },
             },
+          ],
+          as: 'roleResource',
+        },
+      },
+      {
+        $unwind: '$roleResource',
+      },
+      {
+        $lookup: {
+          from: 'resource',
+          let: {
+            resourceIds: '$roleResource.resourceIds',
+          },
+          pipeline: [
             {
-              $lookup: {
-                from: table,
-                let: { addressId: '$_id' },
-                pipeline: [
-                  {
-                    $match: { $expr: { $eq: ['user', 'user'] } },
-                  },
-                ],
-                as: 'address',
+              $match: {
+                $expr: {
+                  $in: [{ $toString: '$_id' }, '$$resourceIds'],
+                },
               },
             },
           ],
-          as: 'roleResource',
+          as: 'resource',
+        },
+      },
+      {
+        $addFields: {
+          resourceIds: {
+            $map: {
+              input: '$resource',
+              in: { $toString: '$$this._id' },
+            },
+          },
+        },
+      },
+      {
+        $lookup: {
+          from: 'resource_menu',
+          let: {
+            resourceIds: '$resourceIds',
+          },
+          pipeline: [
+            {
+              $match: {
+                $expr: {
+                  $in: ['$resourceId', '$$resourceIds'],
+                },
+              },
+            },
+          ],
+          as: 'menus',
         },
       },
     ]);
     const result1 = await this.userModel.find({});
     console.log('result===', result);
     // console.log('result====userRole===', result[0]?.userRole);
-    // console.log('result=====role==', result[0]?.role);
-    console.log(
-      'result=====roleResource==',
-      result[0]?.roleResource[0].address,
-    );
-    console.log('result=====roleResource==', result[1]?.roleResource);
+    console.log('==========result=======', result[0].roleResource);
+    console.log('==========result=======', result[0].resource);
+    console.log('==========result=======', result[0].menus);
+    // console.log('result=====roleResource==', result[0]?.resource[0]);
+    // console.log('result=====roleResource==', result);
+
     // console.log('result=====role==', result[1]?.role);
     // console.log('result1===', result1);
 
-    return result1;
+    return result;
   }
 
   findById(id: string) {
@@ -117,17 +159,19 @@ export class UsersDao {
 const a = {
   _id: '12346789',
   username: '管理A',
-  userRole: {
-    type: 0,
-    name: '管理员',
-  },
+  userRole: [
+    {
+      type: 0,
+      name: '管理员',
+    },
+  ],
   resource: [
     {
       type: 'menu',
       list: [
         {
           url: '/user',
-          playLoad: {
+          btnPermissions: {
             modify: true,
             find: true,
             add: true,
@@ -136,7 +180,7 @@ const a = {
         },
         {
           url: '/article',
-          playLoad: {
+          btnPermissions: {
             modify: true,
             find: true,
             add: true,
