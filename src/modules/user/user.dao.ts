@@ -95,34 +95,6 @@ export class UsersDao {
           as: 'resource',
         },
       },
-      {
-        $addFields: {
-          resourceIds: {
-            $map: {
-              input: '$resource',
-              in: { $toString: '$$this._id' },
-            },
-          },
-        },
-      },
-      {
-        $lookup: {
-          from: 'resource_menu',
-          let: {
-            resourceIds: '$resourceIds',
-          },
-          pipeline: [
-            {
-              $match: {
-                $expr: {
-                  $in: ['$resourceId', '$$resourceIds'],
-                },
-              },
-            },
-          ],
-          as: 'menus',
-        },
-      },
     ]);
     const result1 = await this.userModel.find({});
     console.log('result===', result);
