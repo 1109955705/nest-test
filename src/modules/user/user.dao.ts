@@ -79,7 +79,7 @@ export class UsersDao {
       },
       {
         $lookup: {
-          from: 'resource',
+          from: 'resource_menu',
           let: {
             resourceIds: '$roleResource.resourceIds',
           },
@@ -87,12 +87,94 @@ export class UsersDao {
             {
               $match: {
                 $expr: {
-                  $in: [{ $toString: '$_id' }, '$$resourceIds'],
+                  $in: ['$resourceId', '$$resourceIds'],
                 },
+              },
+            },
+            {
+              $lookup: {
+                from: 'menus',
+                let: {
+                  menuId: '$menuId',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $eq: [{ $toString: '$_id' }, '$$menuId'],
+                      },
+                    },
+                  },
+                ],
+                as: 'menu',
+              },
+            },
+            {
+              $unwind: '$menu',
+            },
+            {
+              $group: {
+                _id: '$menuId',
+                menu: { $first: '$menu' },
+                resourceIds: { $push: '$resourceId' },
+              },
+            },
+            {
+              $lookup: {
+                from: 'resource_operation',
+                let: {
+                  resourceIds: '$resourceIds',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $in: ['$resourceId', '$$resourceIds'],
+                      },
+                    },
+                  },
+                ],
+                as: 'operation',
+              },
+            },
+            {
+              $lookup: {
+                from: 'operation',
+                let: {
+                  operation: '$operation',
+                },
+                pipeline: [
+                  {
+                    $match: {
+                      $expr: {
+                        $in: [{ $toString: '$_id' }, '$$operation.operationId'],
+                      },
+                    },
+                  },
+                ],
+                as: 'operationDetails',
+              },
+            },
+            {
+              $group: {
+                _id: '$_id',
+                name: { $first: '$menu.name' },
+                path: { $first: '$menu.path' },
+                rights: { $first: '$operationDetails.type' },
               },
             },
           ],
           as: 'resource',
+        },
+      },
+      {
+        $project: {
+          _id: 1,
+          username: 1,
+          createdAt: 1,
+          updatedAt: 1,
+          role: 1,
+          resource: 1,
         },
       },
     ]);

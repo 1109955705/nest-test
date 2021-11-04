@@ -7,7 +7,10 @@ import { CreateUserDto, FindUserDto, DeleteUserByIdDto } from './user.dto';
 @Injectable()
 export class UsersService {
   constructor(private readonly usersDao: UsersDao) {}
-  async create(user: CreateUserDto) {
+  async create(user) {
+    console.log('==create==', user);
+
+    return;
     const result = await this.usersDao.create(user);
     return result;
   }

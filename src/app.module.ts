@@ -1,4 +1,4 @@
-import { Module, NestModule, MiddlewareConsumer } from '@nestjs/common';
+import { Module, NestModule, MiddlewareConsumer, Logger } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
 import { UsersModule } from '@/modules//user/user.module';
 import { AuthModule } from '@/modules/auth/auth.module';
@@ -16,7 +16,7 @@ import { AppService } from './app.service';
     AccessModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [Logger, AppService],
 })
 // export class AppModule implements NestModule {
 //   configure(consumer: MiddlewareConsumer) {
